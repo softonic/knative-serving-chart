@@ -5,6 +5,7 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "v0.14.0"
+{{- include "knative-serving.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:

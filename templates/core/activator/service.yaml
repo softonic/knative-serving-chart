@@ -7,6 +7,7 @@ metadata:
   labels:
     app: activator
     serving.knative.dev/release: "v0.14.0"
+{{- include "knative-serving.labels" . | nindent 4 }}
 spec:
   selector:
     app: activator
