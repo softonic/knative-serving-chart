@@ -1,51 +1,37 @@
-apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: activator
+  name: webhook
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "v0.14.0"
 spec:
   selector:
     matchLabels:
-      app: activator
-      role: activator
+      app: webhook
+      role: webhook
   template:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
-        app: activator
-        role: activator
+        app: webhook
+        role: webhook
         serving.knative.dev/release: "v0.14.0"
     spec:
       serviceAccountName: controller
       containers:
-      - name: activator
+      - name: webhook
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:3b530bbcf892aff098444ae529a9d4150dfd0cd35c97babebd90eedae34ad8af
-        # The numbers are based on performance test results from
-        # https://github.com/knative/serving/issues/1625#issuecomment-511930023
+        image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:90562a10f5e37965f4f3332b0412afec1cf3dd1c06caed530213ca0603e52082
         resources:
           requests:
-            cpu: 300m
-            memory: 60Mi
+            cpu: 20m
+            memory: 20Mi
           limits:
-            cpu: 1000m
-            memory: 600Mi
+            cpu: 200m
+            memory: 200Mi
         env:
-        - # Run Activator with GC collection when newly generated memory is 500%.
-          name: GOGC
-          value: "500"
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         - name: SYSTEM_NAMESPACE
           valueFrom:
             fieldRef:
@@ -56,7 +42,19 @@ spec:
           value: config-observability
         - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
           name: METRICS_DOMAIN
-          value: knative.dev/internal/serving
+          value: knative.dev/serving
+        securityContext:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: config-logging
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: config-observability
+        - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
+          name: METRICS_DOMAIN
+          value: knative.dev/serving
         securityContext:
           allowPrivilegeEscalation: false
         ports:
@@ -64,22 +62,5 @@ spec:
           containerPort: 9090
         - name: profiling
           containerPort: 8008
-        - name: http1
-          containerPort: 8012
-        - name: h2c
-          containerPort: 8013
-        readinessProbe: &probe
-          httpGet:
-            port: 8012
-            httpHeaders:
-            - name: k-kubelet-probe
-              value: "activator"
-        livenessProbe: *probe
-      # The activator (often) sits on the dataplane, and may proxy long (e.g.
-      # streaming, websockets) requests.  We give a long grace period for the
-      # activator to "lame duck" and drain outstanding requests before we
-      # forcibly terminate the pod (and outstanding connections).  This value
-      # should be at least as large as the upper bound on the Revision's
-      # timeoutSeconds property to avoid servicing events disrupting
-      # connections.
-      terminationGracePeriodSeconds: 300
+        - name: https-webhook
+          containerPort: 8443
