@@ -5,6 +5,7 @@ metadata:
   labels:
     role: webhook
     serving.knative.dev/release: "v0.14.0"
+{{- include "knative-serving.labels" . | nindent 4 }}
   name: webhook
   namespace: knative-serving
 spec:
