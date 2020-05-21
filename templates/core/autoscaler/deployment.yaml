@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoscaler
+  namespace: knative-serving
+  labels:
+    serving.knative.dev/release: "v0.14.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoscaler
+  template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+      labels:
+        app: autoscaler
+        serving.knative.dev/release: "v0.14.0"
+    spec:
+      serviceAccountName: controller
+      containers:
+      - name: autoscaler
+        # This is the Go import path for the binary that is containerized
+        # and substituted here.
+        image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:bd125e90fffb44b843a183aa00f481cddee2317c0cfde9151c2482c5c2a8ed71
+        resources:
+          requests:
+            cpu: 30m
+            memory: 40Mi
+          limits:
+            cpu: 300m
+            memory: 400Mi
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: config-logging
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: config-observability
+        - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
+          name: METRICS_DOMAIN
+          value: knative.dev/serving
+        securityContext:
+          allowPrivilegeEscalation: false
+        ports:
+        - name: metrics
+          containerPort: 9090
+        - name: profiling
+          containerPort: 8008
+        - name: websocket
+          containerPort: 8080
+        - name: custom-metrics
+          containerPort: 8443
+        readinessProbe: &probe
+          httpGet:
+            port: 8080
+            httpHeaders:
+            - name: k-kubelet-probe
+              value: "autoscaler"
+        livenessProbe: *probe
+        args:
+        - "--secure-port=8443"
+        - "--cert-dir=/tmp"
+---
