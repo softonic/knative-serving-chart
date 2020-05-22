@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: activator-service
+  name: {{ template "knative-serving.core.activator.name" . }}-service
   namespace: knative-serving
   labels:
     app: activator

@@ -1,35 +1,38 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "knative-serving.core.webhook.name" . }}
+  name: {{ template "knative-serving.istio.webhook.name" . }}
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "v0.14.0"
 spec:
   selector:
     matchLabels:
-      app: webhook
-      role: webhook
+      app: istio-webhook
+      role: istio-webhook
   template:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
-        app: webhook
-        role: webhook
+        app: istio-webhook
+        role: istio-webhook
         serving.knative.dev/release: "v0.14.0"
     spec:
-{{- if .Values.core.webhook.priorityClassName }}
-      priorityClassName: "{{ .Values.core.webhook.priorityClassName }}"
-{{- end }}
       serviceAccountName: controller
       containers:
       - name: webhook
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:90562a10f5e37965f4f3332b0412afec1cf3dd1c06caed530213ca0603e52082
+        image: gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook@sha256:b04b047b1c980191bcfb046b97ab0afd39e19e570be341ce0028483fc548aa22
         resources:
-{{- toYaml .Values.core.webhook.resources | indent 10 }}
+          requests:
+            cpu: 20m
+            memory: 20Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
         env:
         - name: SYSTEM_NAMESPACE
           valueFrom:
@@ -41,19 +44,9 @@ spec:
           value: config-observability
         - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
           name: METRICS_DOMAIN
-          value: knative.dev/serving
-        securityContext:
-        - name: SYSTEM_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: CONFIG_LOGGING_NAME
-          value: config-logging
-        - name: CONFIG_OBSERVABILITY_NAME
-          value: config-observability
-        - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
-          name: METRICS_DOMAIN
-          value: knative.dev/serving
+          value: knative.dev/net-istio
+        - name: WEBHOOK_NAME
+          value: istio-webhook
         securityContext:
           allowPrivilegeEscalation: false
         ports:
@@ -63,3 +56,5 @@ spec:
           containerPort: 8008
         - name: https-webhook
           containerPort: 8443
+
+---
