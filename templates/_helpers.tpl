@@ -50,3 +50,20 @@ Selector labels
 app.kubernetes.io/name: {{ include "knative-serving.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
+
+
+{{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "deployment.apiVersion" -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+
+
+{{/*
+Create a default activator name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "knative-serving.core.activator.name" -}}
+{{- printf "%s" .Values.core.activator.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

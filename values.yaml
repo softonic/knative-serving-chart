@@ -4,6 +4,12 @@
 
 core:
   domain: "example.com"
+  activator:
+    name: "activator"
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+      targetCPUUtilizationPercentage: 100
 
 istio:
   externalIngressgateway: "istio-ingressgateway"
