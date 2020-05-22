@@ -5,16 +5,38 @@
 core:
   domain: "example.com"
   activator:
+    priorityClassName: ""
     name: "activator"
     autoscaling:
       minReplicas: 1
       maxReplicas: 20
       targetCPUUtilizationPercentage: 100
+    resources: {}
+  autoscaler:
+    priorityClassName: ""
+    replicaCount: 1
+    name: "autoscaler"
+    resources: {}
+  controller:
+    priorityClassName: ""
+    name: "controller"
+    resources: {}
+  webhook:
+    priorityClassName: ""
+    name: "webhook"
+    resources: {}
 
 istio:
+  networking:
+    name: "networking"
+    resources: {}
+  webhook:
+    name: "webhook"
+    resources: {}
   externalIngressgateway: "istio-ingressgateway"
   localIngressgateway: "cluster-local-gateway"
   namespace: "istio-system"
+  
 
 
 podLabels: {}

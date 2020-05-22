@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: autoscaler
+  name: {{ template "knative-serving.core.autoscaler.name" . }}
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "v0.14.0"
 {{- include "knative-serving.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.core.autoscaler.replicaCount }}
   selector:
     matchLabels:
       app: autoscaler
@@ -19,6 +19,9 @@ spec:
         app: autoscaler
         serving.knative.dev/release: "v0.14.0"
     spec:
+{{- if .Values.core.autoscaler.priorityClassName }}
+      priorityClassName: "{{ .Values.core.autoscaler.priorityClassName }}"
+{{- end }}
       serviceAccountName: controller
       containers:
       - name: autoscaler
@@ -26,12 +29,7 @@ spec:
         # and substituted here.
         image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:bd125e90fffb44b843a183aa00f481cddee2317c0cfde9151c2482c5c2a8ed71
         resources:
-          requests:
-            cpu: 30m
-            memory: 40Mi
-          limits:
-            cpu: 300m
-            memory: 400Mi
+{{- toYaml .Values.core.autoscaler.resources | indent 10 }}
         env:
         - name: SYSTEM_NAMESPACE
           valueFrom:

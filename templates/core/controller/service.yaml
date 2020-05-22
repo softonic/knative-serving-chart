@@ -6,7 +6,7 @@ metadata:
     app: controller
     serving.knative.dev/release: "v0.14.0"
 {{- include "knative-serving.labels" . | nindent 4 }}
-  name: controller
+  name: {{ template "knative-serving.core.controller.name" . }}
   namespace: knative-serving
 spec:
   ports:

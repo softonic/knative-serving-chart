@@ -2,12 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    role: webhook
-    serving.knative.dev/release: "v0.14.0"
-{{- include "knative-serving.labels" . | nindent 4 }}
-  name: {{ template "knative-serving.core.webhook.name" . }}
+  name: {{ template "knative-serving.istio.webhook.name" . }}
   namespace: knative-serving
+  labels:
+    role: istio-webhook
+    serving.knative.dev/release: "v0.14.0"
 spec:
   ports:
   - # Define metrics and profiling for them to be accessible within service meshes.
@@ -21,6 +20,6 @@ spec:
     port: 443
     targetPort: 8443
   selector:
-    role: webhook
+    app: istio-webhook
 
 ---

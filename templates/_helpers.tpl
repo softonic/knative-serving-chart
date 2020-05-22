@@ -67,3 +67,45 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "knative-serving.core.activator.name" -}}
 {{- printf "%s" .Values.core.activator.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a default autoscaler name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "knative-serving.core.autoscaler.name" -}}
+{{- printf "%s" .Values.core.autoscaler.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default controller name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "knative-serving.core.controller.name" -}}
+{{- printf "%s" .Values.core.controller.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default webhook name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "knative-serving.core.webhook.name" -}}
+{{- printf "%s" .Values.core.webhook.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+
+{{/*
+Create a default istio networking name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "knative-serving.istio.networking.name" -}}
+{{- printf "%s-%s" .Values.istio.networking.name "istio" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default istio webhook name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "knative-serving.istio.webhook.name" -}}
+{{- printf "%s-%s" "istio" .Values.istio.webhook.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+

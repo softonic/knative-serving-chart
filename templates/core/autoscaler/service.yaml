@@ -5,7 +5,7 @@ metadata:
     app: autoscaler
     serving.knative.dev/release: "v0.14.0"
 {{- include "knative-serving.labels" . | nindent 4 }}
-  name: autoscaler
+  name: {{ template "knative-serving.core.activator.name" . }}
   namespace: knative-serving
 spec:
   ports:
