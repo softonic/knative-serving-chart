@@ -29,8 +29,10 @@ core:
 istio:
   networking:
     name: "networking"
+    resources: {}
   webhook:
     name: "webhook"
+    resources: {}
   externalIngressgateway: "istio-ingressgateway"
   localIngressgateway: "cluster-local-gateway"
   namespace: "istio-system"
