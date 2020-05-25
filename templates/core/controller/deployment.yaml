@@ -28,7 +28,7 @@ spec:
         # and substituted here.
         image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:71f7c9f101e7e30e82a86d203fb98d6fa607c8d6ac2fcb73fd1defd365795223
         resources:
-{{- toYaml .Values.core.controller.resources | indent 10 }}
+{{ toYaml .Values.core.controller.resources | indent 10 }}
         env:
         - name: SYSTEM_NAMESPACE
           valueFrom:

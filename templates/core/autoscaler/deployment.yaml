@@ -29,7 +29,7 @@ spec:
         # and substituted here.
         image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:bd125e90fffb44b843a183aa00f481cddee2317c0cfde9151c2482c5c2a8ed71
         resources:
-{{- toYaml .Values.core.autoscaler.resources | indent 10 }}
+{{ toYaml .Values.core.autoscaler.resources | indent 10 }}
         env:
         - name: SYSTEM_NAMESPACE
           valueFrom:
