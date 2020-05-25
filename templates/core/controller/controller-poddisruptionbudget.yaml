@@ -1,0 +1,12 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    serving.knative.dev/release: "v0.14.0"
+{{- include "knative-serving.labels" . | nindent 4 }}
+  name: {{ template "knative-serving.core.controller.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: controller
+  minAvailable: {{ .Values.core.controller.minAvailable }}

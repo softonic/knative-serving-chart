@@ -63,4 +63,16 @@ spec:
         args:
         - "--secure-port=8443"
         - "--cert-dir=/tmp"
+    {{- if .Values.core.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.core.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.core.tolerations }}
+      tolerations:
+{{ toYaml .Values.core.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.core.affinity }}
+      affinity:
+{{ toYaml .Values.core.affinity | indent 8 }}
+    {{- end }}
 ---

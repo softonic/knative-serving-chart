@@ -51,5 +51,17 @@ spec:
           containerPort: 8008
         - name: https-webhook
           containerPort: 8443
+    {{- if .Values.istio.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.istio.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.istio.tolerations }}
+      tolerations:
+{{ toYaml .Values.istio.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.istio.affinity }}
+      affinity:
+{{ toYaml .Values.istio.affinity | indent 8 }}
+    {{- end }}
 
 ---
