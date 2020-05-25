@@ -3,7 +3,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-serving-controller-admin
   labels:
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 subjects:
 - kind: ServiceAccount
   name: controller

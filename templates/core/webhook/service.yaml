@@ -4,7 +4,7 @@ kind: Service
 metadata:
   labels:
     role: webhook
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 {{- include "knative-serving.labels" . | nindent 4 }}
   name: {{ template "knative-serving.core.webhook.name" . }}
   namespace: knative-serving

@@ -4,7 +4,7 @@ metadata:
   name: {{ template "knative-serving.core.controller.name" . }}
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     {{- include "knative-serving.labels" . | nindent 4 }}
 spec:
   selector:
@@ -16,7 +16,7 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: controller
-        serving.knative.dev/release: "v0.14.0"
+        serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     spec:
 {{- if .Values.core.controller.priorityClassName }}
       priorityClassName: "{{ .Values.core.controller.priorityClassName }}"

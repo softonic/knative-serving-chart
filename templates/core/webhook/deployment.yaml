@@ -4,7 +4,7 @@ metadata:
   name: {{ template "knative-serving.core.webhook.name" . }}
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 spec:
   selector:
     matchLabels:
@@ -17,7 +17,7 @@ spec:
       labels:
         app: webhook
         role: webhook
-        serving.knative.dev/release: "v0.14.0"
+        serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     spec:
 {{- if .Values.core.webhook.priorityClassName }}
       priorityClassName: "{{ .Values.core.webhook.priorityClassName }}"

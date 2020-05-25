@@ -6,7 +6,7 @@ metadata:
   name: {{ template "knative-serving.istio.networking.name" . }}
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     networking.knative.dev/ingress-provider: istio
 spec:
   selector:
@@ -22,7 +22,7 @@ spec:
         sidecar.istio.io/inject: "false"
       labels:
         app: networking-istio
-        serving.knative.dev/release: "v0.14.0"
+        serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     spec:
       serviceAccountName: controller
       containers:
