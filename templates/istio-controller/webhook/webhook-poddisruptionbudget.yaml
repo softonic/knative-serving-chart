@@ -1,3 +1,4 @@
+{{- if .Values.istio.webhook.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -9,4 +10,5 @@ spec:
   selector:
     matchLabels:
       app: webhook
-  minAvailable: {{ .Values.istio.webhook.minAvailable }}
+  minAvailable: {{ .Values.istio.webhook.podDisruptionBudget.minAvailable }}
+{{- end }}

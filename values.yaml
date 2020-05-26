@@ -5,7 +5,9 @@
 core:
   domain: "example.com"
   activator:
-    minAvailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
     priorityClassName: ""
     name: "activator"
     autoscaling:
@@ -14,18 +16,24 @@ core:
       targetCPUUtilizationPercentage: 100
     resources: {}
   autoscaler:
-    minAvailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
     priorityClassName: ""
     replicaCount: 1
     name: "autoscaler"
     resources: {}
   controller:
-    minAvailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
     priorityClassName: ""
     name: "controller"
     resources: {}
   webhook:
-    minAvailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
     priorityClassName: ""
     name: "webhook"
     resources: {}
@@ -38,11 +46,15 @@ core:
 
 istio:
   networking:
-    minAvailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
     name: "networking"
     resources: {}
   webhook:
-    minAvailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
     name: "webhook"
     resources: {}
   externalIngressgateway: "istio-ingressgateway"

@@ -1,3 +1,4 @@
+{{- if .Values.core.controller.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -9,4 +10,5 @@ spec:
   selector:
     matchLabels:
       app: controller
-  minAvailable: {{ .Values.core.controller.minAvailable }}
+  minAvailable: {{ .Values.core.controller.podDisruptionBudget.minAvailable }}
+{{- end }}

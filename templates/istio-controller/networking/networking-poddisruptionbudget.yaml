@@ -1,3 +1,4 @@
+{{- if .Values.istio.networking.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -9,4 +10,5 @@ spec:
   selector:
     matchLabels:
       app: networking-istio
-  minAvailable: {{ .Values.istio.networking.minAvailable }}
+  minAvailable: {{ .Values.istio.networking.podDisruptionBudget.minAvailable }}
+{{- end }}

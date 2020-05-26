@@ -1,3 +1,4 @@
+{{- if .Values.core.webhook.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -9,4 +10,5 @@ spec:
   selector:
     matchLabels:
       app: webhook
-  minAvailable: {{ .Values.core.webhook.minAvailable }}
+  minAvailable: {{ .Values.core.webhook.podDisruptionBudget.minAvailable }}
+{{- end }}
