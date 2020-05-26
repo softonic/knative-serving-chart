@@ -533,6 +533,12 @@ data:
     # 3. Redirected: The Knative ingress will send a 302 redirect for all
     # http connections, asking the clients to use HTTPS
     httpProtocol: "Enabled"
+{{- if .Values.certmanager.enabled }}
+  autoTLS: "Enabled"
+{{ end }}
+{{- if and .Values.certmanager.enabled ( .Values.certmanager.httpEnabled) }}
+  httpProtocol: Enabled
+{{ end }}
 
 ---
 apiVersion: v1
