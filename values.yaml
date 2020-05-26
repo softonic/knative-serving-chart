@@ -54,4 +54,9 @@ istio:
   nodeSelector: {}
   lifecycle: {}
   affinity: {}
-  
+ 
+certmanager:
+  enabled: false
+  typeissuer: ClusterIssuer
+  clusterissuer: ""
+  provider: "cert-manager"
