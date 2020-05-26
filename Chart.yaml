@@ -2,5 +2,6 @@ apiVersion: v2
 name: knative-serving
 description: A knative serving Helm chart for Kubernetes
 type: application
-version: 1.0.5
+version: 1.0.6
 appVersion: v0.14.0
+icon: https://avatars0.githubusercontent.com/u/170456
