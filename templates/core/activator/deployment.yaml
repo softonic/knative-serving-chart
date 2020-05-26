@@ -19,7 +19,7 @@ metadata:
   name: {{ template "knative-serving.core.activator.name" . }}
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 {{- include "knative-serving.labels" . | nindent 4 }}
 spec:
   selector:
@@ -33,7 +33,7 @@ spec:
       labels:
         app: activator
         role: activator
-        serving.knative.dev/release: "v0.14.0"
+        serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     spec:
 {{- if .Values.core.activator.priorityClassName }}
       priorityClassName: "{{ .Values.core.activator.priorityClassName }}"

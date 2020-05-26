@@ -6,7 +6,7 @@ metadata:
   namespace: knative-serving
   labels:
     role: istio-webhook
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 spec:
   ports:
   - # Define metrics and profiling for them to be accessible within service meshes.
