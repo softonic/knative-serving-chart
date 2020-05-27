@@ -17,7 +17,7 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: networking-certmanager
-        serving.knative.dev/release: "v0.14.0"
+        serving.knative.dev/release: "{{ .Chart.AppVersion }}"
     spec:
       serviceAccountName: controller
       containers:

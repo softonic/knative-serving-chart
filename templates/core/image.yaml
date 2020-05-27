@@ -18,7 +18,7 @@ metadata:
   name: queue-proxy
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v0.14.0"
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 spec:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
