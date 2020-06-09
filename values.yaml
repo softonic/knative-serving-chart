@@ -69,7 +69,7 @@ istio:
  
 certmanager:
   enabled: false
-  httpEnabled: true
+  httpProtocol: Enabled
   typeissuer: ClusterIssuer
   clusterissuer: ""
   provider: "cert-manager"

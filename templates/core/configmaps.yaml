@@ -535,9 +535,7 @@ data:
     httpProtocol: "Enabled"
 {{- if .Values.certmanager.enabled }}
   autoTLS: "Enabled"
-{{ end }}
-{{- if and .Values.certmanager.enabled ( .Values.certmanager.httpEnabled) }}
-  httpProtocol: Enabled
+  httpProtocol: {{ .Values.certmanager.httpProtocol | quote }}
 {{ end }}
 
 ---
