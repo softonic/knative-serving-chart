@@ -27,7 +27,7 @@ spec:
       - name: webhook
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:90562a10f5e37965f4f3332b0412afec1cf3dd1c06caed530213ca0603e52082
+        image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:bfb31793e70608a70a8e1c778b6183eba786bcd10491d84807d300accceb46b0
         resources:
 {{ toYaml .Values.core.webhook.resources | indent 10 }}
         env:
@@ -63,6 +63,15 @@ spec:
           containerPort: 8008
         - name: https-webhook
           containerPort: 8443
+        readinessProbe: &probe
+          periodSeconds: 1
+          httpGet:
+            scheme: HTTPS
+            port: 8443
+            httpHeaders:
+            - name: k-kubelet-probe
+              value: "webhook"
+        livenessProbe: *probe
     {{- if .Values.core.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.core.nodeSelector | indent 8 }}

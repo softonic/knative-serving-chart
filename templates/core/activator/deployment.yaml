@@ -43,7 +43,7 @@ spec:
       - name: activator
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:3b530bbcf892aff098444ae529a9d4150dfd0cd35c97babebd90eedae34ad8af
+        image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:a5de0fb75046f2ad29a9394b9f4f31d258c4abaea3529cf3443d69e2aab1a879
         # The numbers are based on performance test results from
         # https://github.com/knative/serving/issues/1625#issuecomment-511930023
         resources:
@@ -88,6 +88,7 @@ spec:
             httpHeaders:
             - name: k-kubelet-probe
               value: "activator"
+          failureThreshold: 12
         livenessProbe: *probe
       # The activator (often) sits on the dataplane, and may proxy long (e.g.
       # streaming, websockets) requests.  We give a long grace period for the
