@@ -29,7 +29,7 @@ spec:
       - name: networking-istio
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/net-istio/cmd/controller@sha256:3f8db840f5b3778a842dbbf7e8bc9f2babd10b144b816c8497ac46430db8254e
+        image: gcr.io/knative-releases/knative.dev/net-istio/cmd/controller@sha256:270948d92c211fd5f4160a7e0872e9f58ab9c5402152162ab163c0884566a4b7
         resources:
 {{ toYaml .Values.istio.networking.resources | indent 10 }}
         env:
