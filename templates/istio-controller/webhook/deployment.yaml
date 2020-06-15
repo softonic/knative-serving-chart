@@ -26,7 +26,7 @@ spec:
       - name: webhook
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook@sha256:b691c81d117d666d479b4f57416f3edd53f282a7346c64af4ce9c4585df5bec7
+        image: gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook@sha256:76a2eae18ae029040d36437d13e2a89dc108157104391bd6bf0706d806d2837f
         resources:
 {{ toYaml .Values.istio.webhook.resources | indent 10 }}
         env:
