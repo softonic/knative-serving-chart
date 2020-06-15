@@ -25,12 +25,15 @@ metadata:
   name: knative-serving-namespaced-edit
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+    serving.knative.dev/release: "v0.15.0"
 rules:
-- apiGroups: ["serving.knative.dev", "networking.internal.knative.dev", "autoscaling.internal.knative.dev",
-    "caching.internal.knative.dev"]
+- apiGroups: ["serving.knative.dev"]
   resources: ["*"]
   verbs: ["create", "update", "patch", "delete"]
+- apiGroups: ["networking.internal.knative.dev", "autoscaling.internal.knative.dev",
+    "caching.internal.knative.dev"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
 ---
 
 kind: ClusterRole
@@ -39,11 +42,15 @@ metadata:
   name: knative-serving-namespaced-admin
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
-    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+    serving.knative.dev/release: "v0.15.0"
 rules:
-- apiGroups: ["serving.knative.dev", "networking.internal.knative.dev", "autoscaling.internal.knative.dev", "caching.internal.knative.dev"]
+- apiGroups: ["serving.knative.dev"]
   resources: ["*"]
   verbs: ["*"]
+- apiGroups: ["networking.internal.knative.dev", "autoscaling.internal.knative.dev",
+    "caching.internal.knative.dev"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
 
 ---
 
