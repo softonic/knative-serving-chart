@@ -27,7 +27,7 @@ spec:
       - name: webhook
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:bfb31793e70608a70a8e1c778b6183eba786bcd10491d84807d300accceb46b0
+	image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:f16c0e022203f70a4228fba7d4cd951739ee43b491af9dbc569f233c9588e92a
         resources:
 {{ toYaml .Values.core.webhook.resources | indent 10 }}
         env:
@@ -41,18 +41,6 @@ spec:
           value: config-observability
         - name: WEBHOOK_PORT
           value: "8443"
-        - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
-          name: METRICS_DOMAIN
-          value: knative.dev/serving
-        securityContext:
-        - name: SYSTEM_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: CONFIG_LOGGING_NAME
-          value: config-logging
-        - name: CONFIG_OBSERVABILITY_NAME
-          value: config-observability
         - # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
           name: METRICS_DOMAIN
           value: knative.dev/serving

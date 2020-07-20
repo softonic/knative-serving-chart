@@ -27,7 +27,7 @@ spec:
       - name: autoscaler
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:61fc208b9c7923228275f8792288b3e356b2e80432655f237baafcf8ab7c3449
+        image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:2ef460356b17481bc467fc7c35da581707dc490b1f32083457d6d4faed9ef300
         resources:
 {{ toYaml .Values.core.autoscaler.resources | indent 10 }}
         env:
@@ -51,8 +51,6 @@ spec:
           containerPort: 8008
         - name: websocket
           containerPort: 8080
-        - name: custom-metrics
-          containerPort: 8443
         readinessProbe: &probe
           httpGet:
             port: 8080
@@ -60,9 +58,6 @@ spec:
             - name: k-kubelet-probe
               value: "autoscaler"
         livenessProbe: *probe
-        args:
-        - "--secure-port=8443"
-        - "--cert-dir=/tmp"
     {{- if .Values.core.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.core.nodeSelector | indent 8 }}

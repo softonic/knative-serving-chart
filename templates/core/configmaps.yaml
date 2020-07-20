@@ -134,17 +134,19 @@ data:
     # Scale to zero feature flag
     enable-scale-to-zero: "true"
 
-    # Tick interval is the time between autoscaling calculations.
-    tick-interval: "2s"
+    # Scale to zero pod retention period defines the minimum amount
+    # of time the last pod will remain after Autoscaler has decided to
+    # scale to zero.
+    # This flag is for the situations where the pod starup is very expensive
+    # and the traffic is bursty (requiring smaller windows for fast action),
+    # but patchy.
+    # The larger of this flag and `scale-to-zero-grace-period` will effectively
+    # detemine how the last pod will hang around.
+    scale-to-zero-pod-retention-period: "0s"
 
     # Scale to zero grace period is the time an inactive revision is left
     # running before it is scaled to zero (min: 6s).
     scale-to-zero-grace-period: "30s"
-
-    # Enable graceful scaledown feature flag.
-    # Once enabled, it allows the autoscaler to prioritize pods processing
-    # fewer (or zero) requests for removal when scaling down.
-    enable-graceful-scaledown: "false"
 
     # pod-autoscaler-class specifies the default pod autoscaler class
     # that should be used if none is specified. If omitted, the Knative
@@ -200,10 +202,14 @@ data:
     # and the system default is used.
     revision-cpu-request: "400m"  # 0.4 of a CPU (aka 400 milli-CPU)
 
-    # revision-memory-request contains the memory allocation to assign
     # to revisions by default.  If omitted, no value is specified
     # and the system default is used.
     revision-memory-request: "100M"  # 100 megabytes of memory
+
+    # revision-ephemeral-storage-request contains the ephemeral storage
+    # allocation to assign to revisions by default.  If omitted, no value is
+    # specified and the system default is used.
+    revision-ephemeral-storage-request: "500M"  # 500 megabytes of storage
 
     # revision-cpu-limit contains the cpu allocation to limit
     # revisions to by default.  If omitted, no value is specified
@@ -214,6 +220,11 @@ data:
     # revisions to by default.  If omitted, no value is specified
     # and the system default is used.
     revision-memory-limit: "200M"  # 200 megabytes of memory
+
+    # revision-ephemeral-storage-limit contains the ephemeral storage
+    # allocation to limit revisions to by default.  If omitted, no value is
+    # specified and the system default is used.
+    revision-ephemeral-storage-limit: "750M"  # 750 megabytes of storage
 
     # container-name-template contains a template for the default
     # container name, if none is specified.  This field supports
@@ -228,6 +239,12 @@ data:
     # disables this throttling and lets through as many requests as
     # the pod receives.
     container-concurrency: "0"
+
+    # The container concurrency max limit is an operator setting ensuring that
+    # the individual revisions cannot have arbitrary large concurrency
+    # values, or autoscaling targets. `container-concurrency` default setting
+    # must be at or below this value.
+
 
     # The container concurrency max limit is an operator setting ensuring that
     # the individual revisions cannot have arbitrary large concurrency
@@ -250,10 +267,12 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: 0608517d
 data:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:713bd548700bf7fe5452969611d1cc987051bd607d67a4e7623e140f06c209b2
+  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:ab38418f2e13dfc21d48c64af0589f4eae5c40fc34a5e02f48b24b7156391d22
   _example: |
     ################################
     #                              #
@@ -277,6 +296,32 @@ data:
     # be ready before considering it failed.
     progressDeadline: "120s"
 
+    # queueSidecarCPURequest is the requests.cpu to set for the queue proxy sidecar container.
+    # If omitted, a default value (currently "25m"), is used.
+    queueSidecarCPURequest: "25m"
+
+    # queueSidecarCPULimit is the limits.cpu to set for the queue proxy sidecar container.
+    # If omitted, no value is specified and the system default is used.
+    queueSidecarCPULimit: "1000m"
+
+    # queueSidecarMemoryRequest is the requests.memory to set for the queue proxy container.
+    # If omitted, no value is specified and the system default is used.
+    queueSidecarMemoryRequest: "400m"
+
+    # queueSidecarMemoryLimit is the limits.memory to set for the queue proxy container.
+    # If omitted, no value is specified and the system default is used.
+    queueSidecarMemoryLimit: "800m"
+
+    # queueSidecarEphemeralStorageRequest is the requests.ephemeral-storage to
+    # set for the queue proxy sidecar container.
+    # If omitted, no value is specified and the system default is used.
+    queueSidecarEphemeralStorageRequest: "512m"
+
+    # queueSidecarEphemeralStorageLimit is the limits.ephemeral-storage to set
+    # for the queue proxy sidecar container.
+    # If omitted, no value is specified and the system default is used.
+    queueSidecarEphemeralStorageLimit: "1024m"
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -298,6 +343,51 @@ data:
         app: secret
 
 ---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-features
+  namespace: knative-serving
+  labels:
+    serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: e0eb3d80
+data:
+  _example: |
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+
+    # Indicates whether multi container support is enabled
+    multi-container: "disabled"
+
+
+    # Indicates whether Kubernetes FieldRef support is enabled
+    kubernetes.podspec-fieldref: "disabled"
+
+
+    # This feature validates PodSpecs from the validating webhook
+    # against the K8s API Server.
+    #
+    # When "allowed", the client may enable the behavior with the
+    # 'features.knative.dev/podspec-dryrun':'enabled' annotation.
+    # When "enabled"  the server will always run the extra validation.
+    kubernetes.podspec-dryrun: "allowed"
+
+---
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -305,6 +395,8 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: 83219cc3
 data:
   _example: |
     ################################
@@ -347,6 +439,8 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: b705abde
 data:
   _example: |
     ################################
@@ -364,32 +458,21 @@ data:
     # this example block and unindented to be in the data block
     # to actually change the configuration.
 
-    # resourceLock controls which API resource is used as the basis for the
-    # leader election lock. Valid values are:
-    #
-    # - leases -> use the coordination API
-    # - configmaps -> use configmaps
-    # - endpoints -> use endpoints
-    resourceLock: "leases"
-
     # leaseDuration is how long non-leaders will wait to try to acquire the
     # lock; 15 seconds is the value used by core kubernetes controllers.
     leaseDuration: "15s"
+
     # renewDeadline is how long a leader will try to renew the lease before
     # giving up; 10 seconds is the value used by core kubernetes controllers.
     renewDeadline: "10s"
+
     # retryPeriod is how long the leader election client waits between tries of
     # actions; 2 seconds is the value used by core kubernetes controllers.
     retryPeriod: "2s"
+
     # enabledComponents is a comma-delimited list of component names for which
     # leader election is enabled. Valid values are:
-    #
-    # - controller
-    # - hpaautoscaler
-    # - certcontroller
-    # - istiocontroller
-    # - nscontroller
-    enabledComponents: "controller,hpaautoscaler,certcontroller,istiocontroller,nscontroller"
+    enabledComponents: "controller,contour-ingress-controller,hpaautoscaler,certcontroller,istiocontroller,net-http01,nscontroller,webhook"
 
 ---
 
@@ -463,6 +546,8 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: c7f290c9
 data:
   _example: |
     ################################
@@ -535,6 +620,11 @@ data:
     # 3. Redirected: The Knative ingress will send a 302 redirect for all
     # http connections, asking the clients to use HTTPS
     httpProtocol: "Enabled"
+
+    # Controls whether tag header based routing feature are enabled or not.
+    # 1. Enabled: enabling tag header based routing
+    # 2. Disabled: disabling tag header based routing
+    tagHeaderBasedRouting: "Disabled"
 {{- if .Values.certmanager.enabled }}
   autoTLS: "Enabled"
   httpProtocol: {{ .Values.certmanager.httpProtocol | quote }}
@@ -548,6 +638,8 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: 8acf3b67
 data:
   _example: |
     ################################
@@ -646,6 +738,8 @@ metadata:
   namespace: knative-serving
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
+  annotations:
+    knative.dev/example-checksum: 4002b4c2
 data:
   _example: |
     ################################
