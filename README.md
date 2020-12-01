@@ -43,3 +43,4 @@ All configuration settings are contained and described in
 | `resources` | CPU and memory limits for corresponding container. | `{}` |
 | `priorityClassName` | The name of the priorityClass for the pods. | Unset |
 | `lifecycle` | controller pod lifecycle hooks | `{}`
+| `core.podAnnotations` | Add custom annotation fields | `{}`

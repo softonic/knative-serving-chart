@@ -14,6 +14,11 @@ spec:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+{{- if .Values.core.podAnnotations }}
+{{- range $key, $value := .Values.core.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
       labels:
         app: controller
         serving.knative.dev/release: "{{ .Chart.AppVersion }}"
