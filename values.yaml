@@ -23,6 +23,7 @@ core:
     replicaCount: 1
     name: "autoscaler"
     resources: {}
+    podAnnotations: {}
   controller:
     podDisruptionBudget:
       enabled: true

@@ -45,3 +45,4 @@ All configuration settings are contained and described in
 | `lifecycle` | controller pod lifecycle hooks | `{}`
 | `core.controller.podAnnotations` | Add custom annotation fields to the Controller Deployment | `{}`
 | `core.webhook.podAnnotations` | Add custom annotation fields Webhook Deployment | `{}`
+| `core.autoscaler.podAnnotations` | Add custom annotation fields Webhook Deployment | `{}`
