@@ -14,6 +14,11 @@ spec:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+{{- if .Values.core.webhook.podAnnotations }}
+{{- range $key, $value := .Values.core.webhook.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
       labels:
         app: webhook
         role: webhook

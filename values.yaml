@@ -23,6 +23,7 @@ core:
     replicaCount: 1
     name: "autoscaler"
     resources: {}
+    podAnnotations: {}
   controller:
     podDisruptionBudget:
       enabled: true
@@ -30,6 +31,7 @@ core:
     priorityClassName: ""
     name: "controller"
     resources: {}
+    podAnnotations: {}
   webhook:
     podDisruptionBudget:
       enabled: true
@@ -37,6 +39,7 @@ core:
     priorityClassName: ""
     name: "webhook"
     resources: {}
+    podAnnotations: {}
   podLabels: {}
   podAnnotations: {}
   tolerations: []
