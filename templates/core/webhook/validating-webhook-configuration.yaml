@@ -5,8 +5,7 @@ metadata:
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 webhooks:
-- admissionReviewVersions:
-  - v1beta1
+- admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
       name: webhook
@@ -28,8 +27,7 @@ metadata:
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 webhooks:
-- admissionReviewVersions:
-  - v1beta1
+- admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
       name: webhook
@@ -47,8 +45,7 @@ metadata:
   labels:
     serving.knative.dev/release: "{{ .Chart.AppVersion }}"
 webhooks:
-- admissionReviewVersions:
-  - v1beta1
+- admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
       name: webhook

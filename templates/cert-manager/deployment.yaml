@@ -24,7 +24,7 @@ spec:
       - name: networking-certmanager
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: gcr.io/knative-releases/knative.dev/serving/cmd/networking/certmanager@sha256:0eddf11a5e1cb0e6e9697caf0f32cccc5b8d091a95f87b18daf85e0025dc0e20
+        image: gcr.io/knative-releases/knative.dev/net-certmanager/cmd/controller@sha256:4448da9fc1b990b0d265894237814951c8e0cca259798842035d24763f051b7d
         resources:
           requests:
             cpu: 30m
